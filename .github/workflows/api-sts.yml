@@ -25,10 +25,16 @@ jobs:
         with:
           fetch-depth: 1
 
+      - name: Generate key dir
+        working-directory: ./
+        run: mkdir api-auth-keys
+
       - name: Generate private key
+        working-directory: ./api-auth-keys
         run: openssl genrsa -out ../api-auth-keys/private.pem 2048
 
       - name: Generate public key
+        working-directory: ./api-auth-keys
         run: openssl rsa -in ../api-auth-keys/private.pem -outform PEM -pubout -out ../api-auth-keys/public.pem
 
       - name: Install composer dependencies
