@@ -1,0 +1,58 @@
+on: push
+name: Security Token Service CI
+jobs:
+  phpunit:
+    runs-on: ubuntu-latest
+    container:
+      image: kirschbaumdevelopment/laravel-test-runner:8.1
+
+    services:
+      mysql:
+        image: mysql:5.7
+        env:
+          MYSQL_ROOT_PASSWORD: password
+          MYSQL_DATABASE: laravel
+        ports:
+          - 33306:3306
+        options: --health-cmd="mysqladmin ping" --health-interval=10s --health-timeout=5s --health-retries=3
+
+    defaults:
+      run:
+        working-directory: ./api-service
+
+    steps:
+      - uses: actions/checkout@v1
+        with:
+          fetch-depth: 1
+
+      - name: Generate key dir
+        working-directory: ./
+        run: mkdir api-auth-keys
+
+      - name: Generate private key
+        working-directory: ./api-auth-keys
+        run: openssl genrsa -out ../api-auth-keys/private.pem 2048
+
+      - name: Generate public key
+        working-directory: ./api-auth-keys
+        run: openssl rsa -in ../api-auth-keys/private.pem -outform PEM -pubout -out ../api-auth-keys/public.pem
+
+      - name: Install composer dependencies
+        run: |
+          composer update --no-scripts
+
+      - name: Prepare Laravel Application
+        run: |
+          cp .env.example .env
+          php artisan key:generate
+
+      - name: Run Migrations
+        run:  php artisan migrate
+
+      - name: Run Testsuite
+        run: vendor/bin/phpunit tests/
+
+      - name: PHP Syntax Checker (Lint)
+        uses: StephaneBour/actions-php-lint@8.0
+        with:
+          dir: './'
