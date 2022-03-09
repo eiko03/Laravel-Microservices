@@ -1,5 +1,5 @@
 on: push
-name: Security Token Service CI
+name: Micro Service CI
 jobs:
   phpunit:
     runs-on: ubuntu-latest
