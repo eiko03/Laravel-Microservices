@@ -47,6 +47,6 @@ jobs:
         run: vendor/bin/phpunit tests/
 
       - name: PHP Syntax Checker (Lint)
-        uses: StephaneBour/actions-php-lint@8.1
+        uses: StephaneBour/actions-php-lint@8.0
         with:
           dir: './'
