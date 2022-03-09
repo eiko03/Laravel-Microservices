@@ -10,8 +10,8 @@ jobs:
       mysql:
         image: mysql:5.7
         env:
-          MYSQL_ROOT_PASSWORD: passwor434@Aas!d
-          MYSQL_DATABASE: api_sts
+          MYSQL_ROOT_PASSWORD: password
+          MYSQL_DATABASE: laravel
         ports:
           - 33306:3306
         options: --health-cmd="mysqladmin ping" --health-interval=10s --health-timeout=5s --health-retries=3
@@ -24,6 +24,12 @@ jobs:
       - uses: actions/checkout@v1
         with:
           fetch-depth: 1
+
+      - name: Generate private key
+        run: openssl genrsa -passout -out ../api-auth-keys/private.pem -aes256 4096
+
+      - name: Generate public key
+        run: openssl rsa -passin -pubout -in ../api-auth-keys/private.pem -out ../api-auth-keys/public.pem
 
       - name: Install composer dependencies
         run: |
