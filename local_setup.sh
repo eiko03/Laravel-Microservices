@@ -1,10 +1,10 @@
 #!/bin/sh
-echo "MySql username?"
+echo "Enter mysql username"
 read username
 mkdir api-auth-keys
 openssl genrsa -out api-auth-keys/private.pem 2048
 openssl rsa -in api-auth-keys/private.pem -outform PEM -pubout -out api-auth-keys/public.pem
-echo "Enter MySql password?"
+echo "Enter mysql password (twice)"
 read password
 mysql -u $username -p -e "CREATE DATABASE sts CHARACTER SET utf8 COLLATE utf8_general_ci; CREATE DATABASE service CHARACTER SET utf8 COLLATE utf8_general_ci;";
 for d in */ ; do(
